@@ -1,5 +1,3 @@
-import Phaser from 'phaser';
-
 class GameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameScene' });
@@ -7,11 +5,11 @@ class GameScene extends Phaser.Scene {
 
     preload() {
         // Load assets for the spaceship and collectible materials
-        this.load.image('spaceship', 'path/to/spaceship.png'); // Replace with your spaceship image path
-        this.load.image('iron', 'path/to/iron.png');           // Replace with your Iron image path
-        this.load.image('aluminum', 'path/to/aluminum.png');   // Replace with your Aluminum image path
-        this.load.image('lithium', 'path/to/lithium.png');     // Replace with your Lithium image path
-        this.load.image('diamond', 'path/to/diamond.png');     // Replace with your Diamond image path
+        this.load.image('spaceship', 'Assets/Items_Space/spaceship.png'); // Replace with your spaceship image path
+        this.load.image('iron', 'Assets/Items_Space/iron.png');           // Replace with your Iron image path
+        this.load.image('aluminum', 'Assets/Items_Space/aluminum.png');   // Replace with your Aluminum image path
+        this.load.image('lithium', 'Assets/Items_Space/lithium.png');     // Replace with your Lithium image path
+        this.load.image('diamond', 'Assets/Items_Space/diamond.png');     // Replace with your Diamond image path
     }
 
     create() {

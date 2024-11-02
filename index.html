@@ -3,12 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Ship Item Collector</title>
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.js"></script>
-    <script src="src/GameScene.js" defer></script> <!-- Replace with the actual path to your GameScene.js -->
+    <title>Space Collection Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Arial', sans-serif;
+        }
+        h1 {
+            color: #fff;
+            text-align: center;
+            margin-top: 20px;
+        }
+        #instructions {
+            color: white;
+            text-align: center;
+        }
+        #game-container {
+            position: relative;
+            width: auto;
+            height: auto;
+            margin: 20px auto;
+            border: 2px solid #fff;
+        }
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 20px;
+        }
+        @media (max-width: 600px) {
+            #game-container {
+                width: 100%;
+                height: auto;
+            }
+        }
+    </style>
 </head>
 <body>
-<h1>Space Ship Item Collector</h1>
-<p>Collect Iron, Aluminum, Lithium, and Diamond to earn points!</p>
+<h1>Collect Stars in Space!</h1>
+<div id="instructions">
+    <p>Use arrow keys to move your spaceship and collect as many stars as possible before time runs out!</p>
+</div>
+<div id="game-container"></div>
+<div id="loading" style="color: white; text-align: center;">
+    <h2>Loading...</h2>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+<script>
+    console.log("Test message");
+</script>
+<script src="GameScene.js"></script>
 </body>
 </html>
+
