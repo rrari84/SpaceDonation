@@ -72,7 +72,7 @@ class GameScene extends Phaser.Scene {
 
 export default GameScene;
 
-// Create the gameScene configuration and initialize the gameScene
+// Create the game configuration and initialize the game
 const config = {
     type: Phaser.AUTO,
     width: 800,
@@ -87,4 +87,4 @@ const config = {
     scene: GameScene
 };
 
-const gameScene = new Phaser.Game(config);
+const game = new Phaser.Game(config);
