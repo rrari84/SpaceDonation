@@ -1,6 +1,8 @@
 class GameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameScene' });
+        this.totalItems = 20;
+        this.itemsCollected = 0;
     }
 
     preload() {
@@ -57,6 +59,182 @@ class GameScene extends Phaser.Scene {
         // Update the score based on the type of material collected
         this.score += material.points; // Use the points assigned to the material
         this.scoreText.setText('Score: ' + this.score);
+
+        this.itemsCollected++;
+        if (this.itemsCollected === this.totalItems) {
+            this.showGameOver();
+        }
+    }
+
+    showGameOver() {
+        const overlay = this.add.rectangle(0, 0,
+            this.cameras.main.width,
+            this.cameras.main.height,
+            0x000000, 0.7);
+        overlay.setOrigin(0, 0);
+
+        const gameOverText = this.add.text(
+            this.cameras.main.centerX,
+            this.cameras.main.centerY - 100,
+            'Congratulations,\nyou collected all items!', {
+                fontSize: '32px',
+                fill: '#fff',
+                align: 'center'
+            }
+        );
+        gameOverText.setOrigin(0.5);
+
+
+        const finalScoreText = this.add.text(
+            this.cameras.main.centerX,
+            this.cameras.main.centerY,
+            `Final Score: ${this.score}`,
+            {
+                fontSize: '24px',
+                fill: '#fff'
+            }
+        );
+        finalScoreText.setOrigin(0.5);
+
+        const donateButton = this.add.text(
+            this.cameras.main.centerX,
+            this.cameras.main.centerY + 100,
+            'Donate to Space Collection',
+            {
+                fontSize: '24px',
+                fill: '#fff',
+                backgroundColor: '4CAF50',
+                padding: {x: 20, y: 10}
+            }
+        );
+        donateButton.setOrigin(0.5);
+        donateButton.setInteractive({ useHandCursor: true});
+
+        // Add hover effect
+        donateButton.on('pointerover', () => {
+            donateButton.setStyle({ fill: '#4CAF50', backgroundColor: '#fff' });
+        });
+        donateButton.on('pointerout', () => {
+            donateButton.setStyle({ fill: '#fff', backgroundColor: '#4CAF50' });
+        });
+
+        // Handle donation click
+        donateButton.on('pointerdown', () => {
+            const donationAmount = (this.score * 0.1).toFixed(2); // $0.10 per point
+            this.handleDonation(donationAmount);
+        });
+
+        const playAgainButton = this.add.text(
+            this.cameras.main.centerX,
+            this.cameras.main.centerY + 160,
+            'Play Again',
+            {
+                fontSize: '24px',
+                fill: '#fff',
+                backgroundColor: '#2196F3',
+                padding: { x: 20, y: 10 }
+            }
+        );
+        playAgainButton.setOrigin(0.5);
+        playAgainButton.setInteractive({ useHandCursor: true });
+
+        // Add hover effect
+        playAgainButton.on('pointerover', () => {
+            playAgainButton.setStyle({ fill: '#2196F3', backgroundColor: '#fff' });
+        });
+        playAgainButton.on('pointerout', () => {
+            playAgainButton.setStyle({ fill: '#fff', backgroundColor: '#2196F3' });
+        });
+
+        // Handle play again click
+        playAgainButton.on('pointerdown', () => {
+            this.scene.restart();
+        });
+    }
+
+    handleDonation(amount) {
+        // Update the HTML modal with the donation suggestion
+        document.getElementById('donation-suggestion').textContent =
+            `Based on your score, we suggest a donation of $${amount}`;
+        document.getElementById('donation-modal').style.display = 'block';
+
+        // Show overlay in game
+        const modalOverlay = this.add.rectangle(0, 0,
+            this.cameras.main.width,
+            this.cameras.main.height,
+            0x000000, 0.8);
+        modalOverlay.setOrigin(0, 0);
+
+        // Add close button for the modal
+        const closeButton = this.add.text(
+            this.cameras.main.centerX,
+            this.cameras.main.centerY + 100,
+            'Close',
+            {
+                fontSize: '24px',
+                fill: '#fff',
+                backgroundColor: '#ff4444',
+                padding: { x: 20, y: 10 }
+            }
+        );
+        closeButton.setOrigin(0.5);
+        closeButton.setInteractive({ useHandCursor: true });
+
+        // Add hover effect for close button
+        closeButton.on('pointerover', () => {
+            closeButton.setStyle({ fill: '#ff4444', backgroundColor: '#fff' });
+        });
+        closeButton.on('pointerout', () => {
+            closeButton.setStyle({ fill: '#fff', backgroundColor: '#ff4444' });
+        });
+
+        // Handle click for close button
+        closeButton.on('pointerdown', () => {
+            // Remove game overlay
+            modalOverlay.destroy();
+            closeButton.destroy();
+
+            // Hide HTML modal
+            document.getElementById('donation-modal').style.display = 'none';
+
+            // Show thank you message
+            const thankYouText = this.add.text(
+                this.cameras.main.centerX,
+                this.cameras.main.centerY + 220,
+                'Thank you for supporting UNICEF USA!',
+                {
+                    fontSize: '20px',
+                    fill: '#fff',
+                    backgroundColor: '#000',
+                    padding: { x: 10, y: 5 }
+                }
+            );
+            thankYouText.setOrigin(0.5);
+        });
+
+        // Add click event listener to HTML modal close button if needed
+        document.querySelector('.donate-button').onclick = () => {
+            // Remove game overlay
+            modalOverlay.destroy();
+            closeButton.destroy();
+
+            // Hide HTML modal
+            document.getElementById('donation-modal').style.display = 'none';
+
+            // Show thank you message in game
+            const thankYouText = this.add.text(
+                this.cameras.main.centerX,
+                this.cameras.main.centerY + 220,
+                'Thank you for supporting UNICEF USA!',
+                {
+                    fontSize: '20px',
+                    fill: '#fff',
+                    backgroundColor: '#000',
+                    padding: { x: 10, y: 5 }
+                }
+            );
+            thankYouText.setOrigin(0.5);
+        };
     }
 
     update() {
