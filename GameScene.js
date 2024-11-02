@@ -3,31 +3,37 @@ class GameScene extends Phaser.Scene {
         super({ key: 'GameScene' });
         this.totalItems = 20;
         this.itemsCollected = 0;
+        this.timeLimit = 10; // Set the timer to 10 seconds
     }
 
     preload() {
         // Load assets for the spaceship and collectible materials
-        this.load.image('spaceship', 'Assets/Items_Space/spaceship.png'); // Replace with your spaceship image path
-        this.load.image('iron', 'Assets/Items_Space/iron.png');           // Replace with your Iron image path
-        this.load.image('aluminum', 'Assets/Items_Space/aluminum.png');   // Replace with your Aluminum image path
-        this.load.image('lithium', 'Assets/Items_Space/lithium.png');     // Replace with your Lithium image path
-        this.load.image('diamond', 'Assets/Items_Space/diamond.png');     // Replace with your Diamond image path
+        this.load.image('spaceship', 'Assets/Items_Space/spaceship.png');
+        this.load.image('iron', 'Assets/Items_Space/iron.png');
+        this.load.image('aluminum', 'Assets/Items_Space/aluminum.png');
+        this.load.image('lithium', 'Assets/Items_Space/lithium.png');
+        this.load.image('diamond', 'Assets/Items_Space/diamond.png');
     }
 
     create() {
-        // Initialize score
+        // Initialize score and timer
         this.score = 0;
+        this.remainingTime = this.timeLimit;
+
         // Display score on the screen
         this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#fff' });
 
+        // Display timer on the screen
+        this.timerText = this.add.text(650, 16, `Time: ${this.remainingTime}`, { fontSize: '32px', fill: '#fff' });
+
         // Create player spaceship
         this.spaceship = this.physics.add.sprite(100, 100, 'spaceship');
-        this.spaceship.setCollideWorldBounds(true); // Prevent the spaceship from leaving the world bounds
+        this.spaceship.setCollideWorldBounds(true);
 
         // Create a group for collectible items
         this.materials = this.physics.add.group();
 
-        // Generate materials (4 types)
+        // Generate materials
         this.createMaterial('iron', 10);
         this.createMaterial('aluminum', 20);
         this.createMaterial('lithium', 30);
@@ -38,6 +44,14 @@ class GameScene extends Phaser.Scene {
 
         // Set up controls
         this.cursors = this.input.keyboard.createCursorKeys();
+
+        // Set a timer event to count down every second
+        this.timerEvent = this.time.addEvent({
+            delay: 1000,
+            callback: this.updateTimer,
+            callbackScope: this,
+            loop: true
+        });
     }
 
     createMaterial(type, points) {
@@ -48,212 +62,82 @@ class GameScene extends Phaser.Scene {
                 type
             );
             material.setCollideWorldBounds(true);
-            material.points = points; // Assign points for each material type
+            material.points = points;
         }
     }
 
     collectMaterial(spaceship, material) {
-        // Remove the material after collecting it
         material.disableBody(true, true);
-
-        // Update the score based on the type of material collected
-        this.score += material.points; // Use the points assigned to the material
+        this.score += material.points;
         this.scoreText.setText('Score: ' + this.score);
 
         this.itemsCollected++;
         if (this.itemsCollected === this.totalItems) {
-            this.showGameOver();
+            this.endGame();
         }
     }
 
+    updateTimer() {
+        // Decrease remaining time by 1 second
+        this.remainingTime--;
+        this.timerText.setText(`Time: ${this.remainingTime}`);
+
+        // Check if time has run out
+        if (this.remainingTime <= 0) {
+            this.endGame();
+        }
+    }
+
+    endGame() {
+        this.timerEvent.remove(); // Stop the timer
+        this.showGameOver();
+    }
+
     showGameOver() {
-        const overlay = this.add.rectangle(0, 0,
-            this.cameras.main.width,
-            this.cameras.main.height,
-            0x000000, 0.7);
+        // Game over overlay and text
+        const overlay = this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height, 0x000000, 0.7);
         overlay.setOrigin(0, 0);
 
         const gameOverText = this.add.text(
             this.cameras.main.centerX,
             this.cameras.main.centerY - 100,
-            'Congratulations,\nyou collected all items!', {
-                fontSize: '32px',
-                fill: '#fff',
-                align: 'center'
-            }
+            'Game Over',
+            { fontSize: '32px', fill: '#fff', align: 'center' }
         );
         gameOverText.setOrigin(0.5);
-
 
         const finalScoreText = this.add.text(
             this.cameras.main.centerX,
             this.cameras.main.centerY,
             `Final Score: ${this.score}`,
-            {
-                fontSize: '24px',
-                fill: '#fff'
-            }
+            { fontSize: '24px', fill: '#fff' }
         );
         finalScoreText.setOrigin(0.5);
 
-        const donateButton = this.add.text(
-            this.cameras.main.centerX,
-            this.cameras.main.centerY + 100,
-            'Donate to Space Collection',
-            {
-                fontSize: '24px',
-                fill: '#fff',
-                backgroundColor: '4CAF50',
-                padding: {x: 20, y: 10}
-            }
-        );
-        donateButton.setOrigin(0.5);
-        donateButton.setInteractive({ useHandCursor: true});
-
-        // Add hover effect
-        donateButton.on('pointerover', () => {
-            donateButton.setStyle({ fill: '#4CAF50', backgroundColor: '#fff' });
-        });
-        donateButton.on('pointerout', () => {
-            donateButton.setStyle({ fill: '#fff', backgroundColor: '#4CAF50' });
-        });
-
-        // Handle donation click
-        donateButton.on('pointerdown', () => {
-            const donationAmount = (this.score * 0.1).toFixed(2); // $0.10 per point
-            this.handleDonation(donationAmount);
-        });
-
+        // Play again button
         const playAgainButton = this.add.text(
             this.cameras.main.centerX,
-            this.cameras.main.centerY + 160,
+            this.cameras.main.centerY + 100,
             'Play Again',
-            {
-                fontSize: '24px',
-                fill: '#fff',
-                backgroundColor: '#2196F3',
-                padding: { x: 20, y: 10 }
-            }
+            { fontSize: '24px', fill: '#fff', backgroundColor: '#2196F3', padding: { x: 20, y: 10 } }
         );
         playAgainButton.setOrigin(0.5);
         playAgainButton.setInteractive({ useHandCursor: true });
 
-        // Add hover effect
-        playAgainButton.on('pointerover', () => {
-            playAgainButton.setStyle({ fill: '#2196F3', backgroundColor: '#fff' });
-        });
-        playAgainButton.on('pointerout', () => {
-            playAgainButton.setStyle({ fill: '#fff', backgroundColor: '#2196F3' });
-        });
-
-        // Handle play again click
         playAgainButton.on('pointerdown', () => {
             this.scene.restart();
         });
     }
 
-    handleDonation(amount) {
-        // Update the HTML modal with the donation suggestion
-        document.getElementById('donation-suggestion').textContent =
-            `Based on your score, we suggest a donation of $${amount}`;
-        document.getElementById('donation-modal').style.display = 'block';
-
-        // Show overlay in game
-        const modalOverlay = this.add.rectangle(0, 0,
-            this.cameras.main.width,
-            this.cameras.main.height,
-            0x000000, 0.8);
-        modalOverlay.setOrigin(0, 0);
-
-        // Add close button for the modal
-        const closeButton = this.add.text(
-            this.cameras.main.centerX,
-            this.cameras.main.centerY + 100,
-            'Close',
-            {
-                fontSize: '24px',
-                fill: '#fff',
-                backgroundColor: '#ff4444',
-                padding: { x: 20, y: 10 }
-            }
-        );
-        closeButton.setOrigin(0.5);
-        closeButton.setInteractive({ useHandCursor: true });
-
-        // Add hover effect for close button
-        closeButton.on('pointerover', () => {
-            closeButton.setStyle({ fill: '#ff4444', backgroundColor: '#fff' });
-        });
-        closeButton.on('pointerout', () => {
-            closeButton.setStyle({ fill: '#fff', backgroundColor: '#ff4444' });
-        });
-
-        // Handle click for close button
-        closeButton.on('pointerdown', () => {
-            // Remove game overlay
-            modalOverlay.destroy();
-            closeButton.destroy();
-
-            // Hide HTML modal
-            document.getElementById('donation-modal').style.display = 'none';
-
-            // Show thank you message
-            const thankYouText = this.add.text(
-                this.cameras.main.centerX,
-                this.cameras.main.centerY + 220,
-                'Thank you for supporting UNICEF USA!',
-                {
-                    fontSize: '20px',
-                    fill: '#fff',
-                    backgroundColor: '#000',
-                    padding: { x: 10, y: 5 }
-                }
-            );
-            thankYouText.setOrigin(0.5);
-        });
-
-        // Add click event listener to HTML modal close button if needed
-        document.querySelector('.donate-button').onclick = () => {
-            // Remove game overlay
-            modalOverlay.destroy();
-            closeButton.destroy();
-
-            // Hide HTML modal
-            document.getElementById('donation-modal').style.display = 'none';
-
-            // Show thank you message in game
-            const thankYouText = this.add.text(
-                this.cameras.main.centerX,
-                this.cameras.main.centerY + 220,
-                'Thank you for supporting UNICEF USA!',
-                {
-                    fontSize: '20px',
-                    fill: '#fff',
-                    backgroundColor: '#000',
-                    padding: { x: 10, y: 5 }
-                }
-            );
-            thankYouText.setOrigin(0.5);
-        };
-    }
-
     update() {
-        // Handle player movement
-        if (this.cursors.left.isDown) {
-            this.spaceship.setVelocityX(-160);
-        } else if (this.cursors.right.isDown) {
-            this.spaceship.setVelocityX(160);
-        } else {
-            this.spaceship.setVelocityX(0);
-        }
+        // Player movement controls
+        if (this.cursors.left.isDown) this.spaceship.setVelocityX(-160);
+        else if (this.cursors.right.isDown) this.spaceship.setVelocityX(160);
+        else this.spaceship.setVelocityX(0);
 
-        if (this.cursors.up.isDown) {
-            this.spaceship.setVelocityY(-160);
-        } else if (this.cursors.down.isDown) {
-            this.spaceship.setVelocityY(160);
-        } else {
-            this.spaceship.setVelocityY(0);
-        }
+        if (this.cursors.up.isDown) this.spaceship.setVelocityY(-160);
+        else if (this.cursors.down.isDown) this.spaceship.setVelocityY(160);
+        else this.spaceship.setVelocityY(0);
     }
 }
 
@@ -264,10 +148,7 @@ const config = {
     height: 600,
     physics: {
         default: 'arcade',
-        arcade: {
-            gravity: 0,
-            debug: false
-        }
+        arcade: { gravity: 0, debug: false }
     },
     scene: GameScene
 };
