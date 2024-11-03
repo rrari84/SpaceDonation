@@ -143,7 +143,7 @@ class GameScene extends Phaser.Scene {
         const donateButton = this.add.text(
             this.cameras.main.centerX,
             this.cameras.main.centerY + 140,
-            `Donate $${suggestedDonation} to Homeless Helpers`,
+            `Donate $${suggestedDonation} to Housing Helpers`,
             {
                 fontSize: '24px',
                 fill: '#fff',
