@@ -99,6 +99,8 @@ Email: [areebs101@gmail.com](mailto:areebs101@gmail.com)
 ## Acknowledgments
 
 - **Phaser.js** documentation and community for inspiration.
-- [Free resources from OpenGameArt](https://opengameart.org/) for assets.
+- Free resources from [Opengameart](https://opengameart.org/) for assets.
+- Free resources from [Kenney](https://kenney.nl) for assets.
+  
 
 
