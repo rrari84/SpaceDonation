@@ -3,134 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Collection Game for UNICEF</title>
+    <title>Space Collection Game for Housing Helpers</title>
     <style>
         body {
             margin: 0;
-            text-align: center;
-            overflow: scroll;
-            padding: 0;
-            flex-direction: column;
-            height: 3vh;
             background-color: #000;
             font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            min-height: 100vh;
         }
+
         h1 {
-            color: #fff;
+            margin-top: 10px;
+            font-size: 2em;
             text-align: center;
-            margin-top: 20px;
         }
+
         #instructions {
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        #game-container {
+            width: 800px;
+            height: 600px;
+            border: 2px solid #fff;
+            margin: auto;
+            position: relative;
+            background-color: #000;
+        }
+
+        .unicef-info {
             color: white;
             text-align: center;
-            margin-bottom: 20px;
+            margin: 10px;
+            max-width: 600px;
+            padding: 10px;
+            background-color: rgba(0, 156, 222, 0.1);
+            border: 1px solid #009CDE;
+            border-radius: 4px;
         }
-        #game-container {
-            border: white 1px solid;
 
-
-
+        .game-button {
+            background-color: #2196F3;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            margin: 10px;
+            text-decoration: none;
         }
+
         .donate-button {
             background-color: #4CAF50;
             border: none;
             color: white;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
+            padding: 10px 20px;
+            font-size: 24px;
+            border-radius: 4px;
             cursor: pointer;
-            border-radius: 4px;
             transition: all 0.3s ease;
+            text-align: center;
+            margin: 10px;
+            text-decoration: none;
         }
+
+        .game-button:hover,
         .donate-button:hover {
-            background-color: #45a049;
             transform: scale(1.05);
+            opacity: 0.9;
         }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-        }
-        .modal-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #222;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            color: white;
-            max-width: 80%;
-        }
-        .unicef-info {
-            color: white;
-            text-align: center;
-            margin: 20px auto;
-            max-width: 600px;
-            padding: 10px;
-            background-color: rgba(0, 156, 222, 0.1); /* UNICEF blue with opacity */
-            border: 1px solid #009CDE;
-            border-radius: 4px;
-        }
+
         footer {
             text-align: center;
+            font-size: 0.8em;
             color: white;
             margin-top: 20px;
             padding: 10px;
-            font-size: 0.8em;
+            width: 100%;
         }
-        @media (max-width: 820px) {
-            #game-container {
 
-            }
+        @media (max-width: 800px) {
             h1 {
-                font-size: 24px;
+                font-size: 1.5em;
             }
+
+            #game-container {
+                width: 100%;
+                height: 450px;
+            }
+
             #instructions p {
-                font-size: 14px;
-                padding: 0 10px;
+                font-size: 0.9em;
+            }
+
+            .game-button,
+            .donate-button {
+                font-size: 18px;
+                padding: 8px 16px;
             }
         }
     </style>
 </head>
 <body>
-<h1>Space Collection for UNICEF</h1>
+<h1>Space Collection for Housing Helpers</h1>
 <div class="unicef-info">
-    Help children around the world by collecting space materials!
-    Your score will be converted to a suggested donation amount for UNICEF USA.
+    Help Homelessness around the world by collecting space materials!
+    Your score will be converted to a suggested donation amount for Housing Helpers Paypal.
 </div>
 <div id="instructions">
     <p>Use arrow keys to move your spaceship and collect all materials. Each material has different point values!</p>
     <p>Iron: 10pts | Aluminum: 20pts | Lithium: 30pts | Diamond: 50pts</p>
 </div>
-
-
-<!-- Donation Modal -->
-<div id="donation-modal" class="modal">
-    <div class="modal-content">
-        <h2>Thank You for Playing!</h2>
-        <p id="donation-suggestion"></p>
-        <button class="donate-button" onclick="window.open('https://www.paypal.com/US/fundraiser/charity/2400352', '_blank')">
-            Donate to UNICEF USA
-        </button>
-    </div>
-</div>
+<div id="game-container"></div>
 
 <footer>
-    This game supports UNICEF USA through suggested donations.
+    This game supports Housing Helpers through suggested donations.
     All donations are processed securely through PayPal.
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+<!-- Load Phaser first -->
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+<!-- Load your game scene -->
 <script src="GameScene.js"></script>
 </body>
 </html>

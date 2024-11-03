@@ -30,6 +30,9 @@ class GameScene extends Phaser.Scene {
         this.spaceship = this.physics.add.sprite(100, 100, 'spaceship');
         this.spaceship.setCollideWorldBounds(true);
 
+        // Scale the spaceship if needed
+        this.spaceship.setScale(0.3); // Adjust this value as needed
+
         // Create a group for collectible items
         this.materials = this.physics.add.group();
 
@@ -62,6 +65,7 @@ class GameScene extends Phaser.Scene {
                 type
             );
             material.setCollideWorldBounds(true);
+            material.setScale(0.2); // Adjust this value as needed
             material.points = points;
         }
     }
@@ -78,11 +82,9 @@ class GameScene extends Phaser.Scene {
     }
 
     updateTimer() {
-        // Decrease remaining time by 1 second
         this.remainingTime--;
         this.timerText.setText(`Time: ${this.remainingTime}`);
 
-        // Check if time has run out
         if (this.remainingTime <= 0) {
             this.endGame();
         }
@@ -90,6 +92,7 @@ class GameScene extends Phaser.Scene {
 
     endGame() {
         this.timerEvent.remove(); // Stop the timer
+        this.physics.pause(); // Stop all physics movement
         this.showGameOver();
     }
 
@@ -114,12 +117,20 @@ class GameScene extends Phaser.Scene {
         );
         finalScoreText.setOrigin(0.5);
 
+        // Calculate suggested donation amount
+        const suggestedDonation = Math.max(1, Math.ceil(this.score * 0.1)); // Minimum $1 donation
+
         // Play again button
         const playAgainButton = this.add.text(
             this.cameras.main.centerX,
-            this.cameras.main.centerY + 100,
+            this.cameras.main.centerY + 60,
             'Play Again',
-            { fontSize: '24px', fill: '#fff', backgroundColor: '#2196F3', padding: { x: 20, y: 10 } }
+            {
+                fontSize: '24px',
+                fill: '#fff',
+                backgroundColor: '#2196F3',
+                padding: { x: 20, y: 10 }
+            }
         );
         playAgainButton.setOrigin(0.5);
         playAgainButton.setInteractive({ useHandCursor: true });
@@ -127,30 +138,69 @@ class GameScene extends Phaser.Scene {
         playAgainButton.on('pointerdown', () => {
             this.scene.restart();
         });
+
+        // Donation button
+        const donateButton = this.add.text(
+            this.cameras.main.centerX,
+            this.cameras.main.centerY + 140,
+            `Donate $${suggestedDonation} to UNICEF`,
+            {
+                fontSize: '24px',
+                fill: '#fff',
+                backgroundColor: '#4CAF50',
+                padding: { x: 20, y: 10 }
+            }
+        );
+        donateButton.setOrigin(0.5);
+        donateButton.setInteractive({ useHandCursor: true });
+
+        donateButton.on('pointerdown', () => {
+            window.open('https://www.paypal.com/US/fundraiser/charity/2400352', '_blank');
+        });
     }
 
     update() {
-        // Player movement controls
-        if (this.cursors.left.isDown) this.spaceship.setVelocityX(-160);
-        else if (this.cursors.right.isDown) this.spaceship.setVelocityX(160);
-        else this.spaceship.setVelocityX(0);
+        if (!this.cursors) return;
 
-        if (this.cursors.up.isDown) this.spaceship.setVelocityY(-160);
-        else if (this.cursors.down.isDown) this.spaceship.setVelocityY(160);
-        else this.spaceship.setVelocityY(0);
+        // Reset velocity
+        this.spaceship.setVelocity(0);
+
+        // Movement speed
+        const speed = 300;
+
+        // Handle keyboard input
+        if (this.cursors.left.isDown) {
+            this.spaceship.setVelocityX(-speed);
+        }
+        else if (this.cursors.right.isDown) {
+            this.spaceship.setVelocityX(speed);
+        }
+
+        if (this.cursors.up.isDown) {
+            this.spaceship.setVelocityY(-speed);
+        }
+        else if (this.cursors.down.isDown) {
+            this.spaceship.setVelocityY(speed);
+        }
     }
 }
 
-// Create the game configuration and initialize the game
-const config = {
-    type: Phaser.AUTO,
-    width: 800,
-    height: 600,
-    physics: {
-        default: 'arcade',
-        arcade: { gravity: 0, debug: false }
-    },
-    scene: GameScene
-};
+// Initialize the game with configuration
+window.onload = function() {
+    const config = {
+        type: Phaser.AUTO,
+        parent: 'game-container',
+        width: 800,
+        height: 600,
+        physics: {
+            default: 'arcade',
+            arcade: {
+                gravity: 0,
+                debug: false
+            }
+        },
+        scene: GameScene
+    };
 
-const game = new Phaser.Game(config);
+    const game = new Phaser.Game(config);
+}
