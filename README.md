@@ -12,8 +12,7 @@ In this game, you control a spaceship and aim to collect items scattered across 
 - **Space Theme**: Experience the thrill of space exploration while collecting items.
 
 ## Demo
- 
-<img width="958" alt="image" src="https://github.com/user-attachments/assets/b8ad859e-8f7a-422b-a242-fda2df736fec">
+<img width="956" alt="image" src="https://github.com/user-attachments/assets/2c60a976-0cda-4fb3-aa96-112473818f48">
 
 ## Built With
 
