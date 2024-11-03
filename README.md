@@ -13,3 +13,21 @@ This game is designed with a space-inspired theme and is intended to be a fun wa
 
 <h2>Demo</h2>
 -insert here once done-
+
+<h2>Built With</h2>
+*Phaser.js - A JavaScript framework for building games.
+*HTML/CSS - For layout and styling.
+
+<h2>Getting Started</h2>
+<p>To get a local copy up and running, follow these simple steps.</p>
+
+<h2>Prerequisites</h2>
+*Node.js (optional) if you want to run a local development server.
+*Basic knowledge of HTML, CSS, and JavaScript.
+
+<h2>Installation</h2>
+<p>1. Clone the repository: </p>
+```bash
+git clone https://github.com/rrari84/SpaceDonation
+```
+
