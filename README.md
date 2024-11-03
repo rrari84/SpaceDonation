@@ -93,6 +93,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## Contact
 
 [Areeba Rahu](https://github.com/rrari84)  
+[Fatima Tausif](https://github.com/ftausif)
+[Nuha Kadak](https://github.com/nuhakadak)
+
 Email: [areebs101@gmail.com](mailto:areebs101@gmail.com)
 
 ## Acknowledgments
